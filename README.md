@@ -22,7 +22,7 @@ $ docker-compose up
 
 ## Описание Backend части
 
-Сервис написан на Node.js с помощью фреймворка NestJS.
+Сервис написан на Node.js с помощью фреймворка NestJS и доступен по адресу [http://localhost:5000/api/](http://localhost:5000/api/ "http://localhost:5000/api/")
 
 Конфигурация вынесена в  `.env` файлы, для разработки и продакшена соответсвенно.
 Написана миграция для создания таблиц и заполнения таблицы со статусами.
@@ -33,3 +33,12 @@ $ docker-compose up
 ## Описание Frontend части
 
 Сервис написан на фреймворке Vue.js и доступен по адресу [http://localhost:8080/](http://localhost:8080/ "http://localhost:8080/")
+
+### Tests
+```bash
+# Unit
+$ npm run test:unit
+
+# E2E
+$ npx cypress run
+```
