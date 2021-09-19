@@ -9,7 +9,8 @@
           id="FType"
           type="text"
           class="browser-default"
-          v-model="finding.type"
+          :class="{ invalid: finding.type.$error }"
+          v-model.trim="finding.type.$model"
         />
       </div>
       <div class="col s2"><label for="FRuleId">RuleId</label></div>
@@ -18,7 +19,8 @@
           id="FRuleId"
           type="text"
           class="browser-default"
-          v-model="finding.ruleId"
+          :class="{ invalid: finding.ruleId.$error }"
+          v-model="finding.ruleId.$model"
         />
       </div>
     </div>
@@ -32,7 +34,8 @@
           id="FLocationPath"
           type="text"
           class="browser-default"
-          v-model="finding.location.path"
+          :class="{ invalid: finding.location.path.$error }"
+          v-model="finding.location.path.$model"
         />
       </div>
       <div class="col s2"><label for="FLocationPos">Begin position</label></div>
@@ -41,7 +44,8 @@
           id="FLocationPos"
           type="text"
           class="browser-default"
-          v-model="finding.location.positions.begin.line"
+          :class="{ invalid: finding.location.positions.begin.line.$error }"
+          v-model="finding.location.positions.begin.line.$model"
         />
       </div>
     </div>
@@ -55,7 +59,8 @@
           id="FMetadataDesc"
           type="text"
           class="browser-default"
-          v-model="finding.metadata.description"
+          :class="{ invalid: finding.metadata.description.$error }"
+          v-model="finding.metadata.description.$model"
         />
       </div>
       <div class="col s2"><label for="FMetadataSev">Severity</label></div>
@@ -64,7 +69,8 @@
           id="FMetadataSev"
           type="text"
           class="browser-default"
-          v-model="finding.metadata.severity"
+          :class="{ invalid: finding.metadata.severity.$error }"
+          v-model="finding.metadata.severity.$model"
         />
       </div>
     </div>
@@ -104,5 +110,9 @@ export default {
 
 .finding-item-label {
   text-align: left;
+}
+
+.browser-default.invalid {
+  border: 2px solid #f44336;
 }
 </style>

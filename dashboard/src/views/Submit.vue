@@ -7,14 +7,27 @@
           <div class="input-field col s6">
             <input
               id="repositoryName"
+              data-cy="repositoryName-input"
               type="text"
               class="validate"
-              v-model="scanResult.repositoryName"
+              :class="{ invalid: $v.scanResult.repositoryName.$error }"
+              v-model.trim="$v.scanResult.repositoryName.$model"
             />
             <label for="repositoryName">Repository Name</label>
+            <span class="helper-text left-align"
+              >Repository Name must have at least
+              {{ $v.scanResult.repositoryName.$params.minLength.min }}
+              letters.</span
+            >
           </div>
-          <div class="input-field col s6">
-            <select v-model="scanResult.statusId">
+          <div
+            class="input-field col s6"
+            :class="{ invalid: $v.scanResult.statusId.$error }"
+          >
+            <select
+              v-model.trim="$v.scanResult.statusId.$model"
+              data-cy="statusId-select"
+            >
               <option value="" disabled selected>Choose option</option>
               <option :value="s.id" v-for="s in statusesList" :key="s.id">
                 {{ s.value }}
@@ -34,21 +47,32 @@
         >
       </div>
 
-      <FindingItem
-        v-for="item in scanResult.findings"
-        :key="item.id"
-        :finding="item"
-        @deleteItem="deleteFindingItem($event)"
-      />
+      <p
+        class="findings-error left-align"
+        v-if="!$v.scanResult.findings.required"
+      >
+        Please enter at least one record of findings
+      </p>
+
+      <div class="finding-items">
+        <FindingItem
+          v-for="v in $v.scanResult.findings.$each.$iter"
+          :key="v.id"
+          :finding="v"
+          @deleteItem="deleteFindingItem($event)"
+        />
+      </div>
     </form>
 
-    <button class="btn waves-effect waves-light" @click="saveResult()">
+    <button
+      class="btn waves-effect waves-light save-result"
+      @click="saveResult()"
+    >
       Submit
       <i class="material-icons right">send</i>
     </button>
 
-    <p>{{ message }}</p>
-
+    <p class="submit-message">{{ message }}</p>
   </div>
 </template>
 
@@ -56,6 +80,7 @@
 import M from 'materialize-css'
 import FindingItem from '@/components/FindingItem.vue'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { required, minLength } from 'vuelidate/lib/validators'
 
 export default {
   data () {
@@ -64,6 +89,46 @@ export default {
         statusId: null,
         repositoryName: null,
         findings: []
+      }
+    }
+  },
+  validations: {
+    scanResult: {
+      repositoryName: {
+        required,
+        minLength: minLength(4)
+      },
+      statusId: { required },
+      findings: {
+        required,
+        $each: {
+          type: {
+            required
+          },
+          ruleId: {
+            required
+          },
+          location: {
+            path: {
+              required
+            },
+            positions: {
+              begin: {
+                line: {
+                  required
+                }
+              }
+            }
+          },
+          metadata: {
+            description: {
+              required
+            },
+            severity: {
+              required
+            }
+          }
+        }
       }
     }
   },
@@ -100,7 +165,10 @@ export default {
     },
     saveResult () {
       console.log(this.scanResult)
-      this.addScanResult(this.scanResult)
+      this.$v.$touch()
+      if (!this.$v.$invalid) {
+        this.addScanResult(this.scanResult)
+      }
     }
   },
   created () {
@@ -121,5 +189,13 @@ export default {
 <style>
 .scan-result {
   padding: 50px;
+}
+
+.invalid .select-wrapper input {
+  border-bottom: 2px solid #f44336;
+}
+
+.findings-error {
+  color: #f44336;
 }
 </style>

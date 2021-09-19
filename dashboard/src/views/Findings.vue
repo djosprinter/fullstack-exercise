@@ -5,7 +5,7 @@
       <div class="left-align">
         <router-link
           to="/result-list"
-          class="btn-floating btn-large waves-effect waves-light blue lighten-3"
+          class="btn-floating btn-large waves-effect waves-light blue lighten-3 back-to-results"
           ><i class="material-icons">arrow_back</i></router-link
         >
       </div>
